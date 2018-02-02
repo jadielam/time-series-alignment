@@ -32,15 +32,17 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
      /opt/conda/bin/conda clean -ya 
 ENV PATH /opt/conda/envs/pytorch-py$PYTHON_VERSION/bin:$PATH
 RUN /opt/conda/bin/conda install --name pytorch-py$PYTHON_VERSION -c soumith magma-cuda80
-# This must be done before pip so that requirements.txt is available
+
+# Installing pytorch
 WORKDIR /opt
 RUN git clone https://github.com/pytorch/pytorch
-
+WORKDIR /opt/pytorch
 RUN git submodule update --init
 RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1+PTX" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
     CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
     pip install -v .
 
+# Installing pytorch vision
 RUN git clone https://github.com/pytorch/vision.git && cd vision && pip install -v .
 
 WORKDIR /workspace
