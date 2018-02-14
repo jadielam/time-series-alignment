@@ -45,6 +45,11 @@ RUN TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1+PTX" TORCH_NVCC_FLAGS="-Xfatbin -compr
 # Installing pytorch vision
 RUN git clone https://github.com/pytorch/vision.git && cd vision && pip install -v .
 
+# Installing pytorch text
+RUN pip install torchtext
+pip install nltk
+python -m nltk.downloader perluniprops nonbreaking_prefixes
+
 WORKDIR /workspace
 RUN chmod -R a+w /workspace
 
